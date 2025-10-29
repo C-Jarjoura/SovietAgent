@@ -1,5 +1,8 @@
-#include <iostream>
+#include "Jeu.h"
 
-
-
-int main() {}
+int main() {
+    Jeu jeu;
+    jeu.genererJournee();
+    jeu.afficherEtat();
+    return 0;
+}
