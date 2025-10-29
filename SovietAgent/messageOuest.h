@@ -1,18 +1,19 @@
 #pragma once
-#include <string>
+#include <set>
+#include "Motive.h"
 
 class MessageOuest {
 private:
-    std::string messageMorse;
-    std::string instructions;
+    std::set<MotiveType> forcedAllow;
+    bool active;
 
 public:
     MessageOuest();
-    MessageOuest(const std::string& morse, const std::string& instr);
 
-    std::string getMessageMorse() const;
-    std::string getInstructions() const;
+    void generateForDay(double probability);
+    bool overrides(MotiveType m) const;
+    bool isActive() const { return active; }
 
-    void genererMessageAleatoire(double probabiliteMessage);
-    void afficherDebug() const;
+    // Unified display method (replaces getMorse & getInstructions)
+    void showDebug() const;
 };

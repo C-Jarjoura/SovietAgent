@@ -123,8 +123,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="interface.cpp" />
+    <ClCompile Include="jeu.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="messageOuest.cpp" />
+    <ClCompile Include="motive.cpp" />
+    <ClCompile Include="permis.cpp" />
+    <ClCompile Include="politiqueDuJour.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="interface.h" />
+    <ClInclude Include="jeu.h" />
+    <ClInclude Include="messageOuest.h" />
+    <ClInclude Include="motive.h" />
+    <ClInclude Include="permis.h" />
+    <ClInclude Include="politiqueDuJour.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

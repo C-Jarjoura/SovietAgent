@@ -4,20 +4,25 @@
 
 class Interface {
 private:
-    Jeu& jeu;
-    int choix;
-    int jour;
-    int actions;
-    int score;
+    Jeu& jeu;         // reference to the main game logic
+    int choice;       // player’s input
+    int day;          // current day number
+    int actions;      // number of actions taken
+    int score;        // total score
 
-    // Internal helpers
+public:
+    // Constructor
+    Interface(Jeu& j);
+
+    // Main game loop
+    void run();
+
+    // Display functions
     void showMenu() const;
     void showPolicy() const;
     void showPermit(const Permis& p) const;
-    bool validInput(const std::string& input) const;
     void showDaySummary();
 
-public:
-    Interface(Jeu& j);
-    void run();
+    // Input validation
+    bool validInput(const std::string& input) const;
 };

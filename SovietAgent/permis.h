@@ -1,26 +1,30 @@
 #pragma once
+#include <iostream>
 #include <string>
+#include "Motive.h"
 
 class Permis {
 private:
-    std::string nom;
-    std::string motif;
-    bool decision;            // true = accepté, false = refusé
-    std::string messageMorse; // message reçu
+    std::string name;
+    MotiveType motive;
+    bool decision;
+    bool westOverride;
+    bool proWest;
 
 public:
-    // Constructeurs
     Permis();
-    Permis(const std::string& nom, const std::string& motif, const std::string& morse);
+    Permis(const std::string& n, MotiveType m);
 
-    // Getters / Setters
-    std::string getNom() const;
-    std::string getMotif() const;
+    const std::string& getName() const;
+    MotiveType getMotive() const;
     bool getDecision() const;
-    std::string getMessageMorse() const;
+    void setDecision(bool d);
 
-    void setDecision(bool value);
+    void setWestOverride(bool v) { westOverride = v; }
+    bool hasWestOverride() const { return westOverride; }
 
-    // Méthodes utilitaires
-    void afficherDebug() const; // pour tests
+    void setProWest(bool v) { proWest = v; }
+    bool isProWest() const { return proWest; }
+
+    void showDebug() const;
 };

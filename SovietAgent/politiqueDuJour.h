@@ -1,17 +1,14 @@
 #pragma once
-#include <string>
-#include <vector>
+#include <map>
+#include "Motive.h"
 
 class PolitiqueDuJour {
 private:
-    std::vector<std::string> motifsAutorises;
-    std::vector<std::string> motifsInterdits;
+    std::map<MotiveType, bool> allowed;
 
 public:
     PolitiqueDuJour();
-
-    void genererPolitiqueAleatoire();
-    bool estAutorise(const std::string& motif) const;
-
-    void afficherDebug() const;
+    void generateRandomPolicy();
+    bool isAllowed(MotiveType m) const;
+    void showDebug() const;
 };

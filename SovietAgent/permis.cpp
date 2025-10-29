@@ -1,22 +1,25 @@
 #include "Permis.h"
 #include <iostream>
 
-Permis::Permis() : nom("Inconnu"), motif(""), decision(false), messageMorse("") {}
-
-Permis::Permis(const std::string& n, const std::string& m, const std::string& morse)
-    : nom(n), motif(m), decision(false), messageMorse(morse) {
+Permis::Permis()
+    : name(""), motive(MotiveType::Tourism),
+    decision(false), westOverride(false), proWest(false) {
 }
 
-std::string Permis::getNom() const { return nom; }
-std::string Permis::getMotif() const { return motif; }
+Permis::Permis(const std::string& n, MotiveType m)
+    : name(n), motive(m),
+    decision(false), westOverride(false), proWest(false) {
+}
+
+const std::string& Permis::getName() const { return name; }
+MotiveType Permis::getMotive() const { return motive; }
 bool Permis::getDecision() const { return decision; }
-std::string Permis::getMessageMorse() const { return messageMorse; }
+void Permis::setDecision(bool d) { decision = d; }
 
-void Permis::setDecision(bool value) { decision = value; }
-
-void Permis::afficherDebug() const {
-    std::cout << "Permis de " << nom
-        << " | Motif: " << motif
-        << " | Morse: " << messageMorse
-        << " | Decision: " << (decision ? "Accepté" : "Refusé") << "\n";
+void Permis::showDebug() const {
+    std::cout << "Permit for " << name
+        << " | Motive: " << motiveToString(motive)
+        << " | Decision: " << (decision ? "ALLOW" : "DENY")
+        << (westOverride ? " | WEST OVERRIDE" : "")
+        << std::endl;
 }

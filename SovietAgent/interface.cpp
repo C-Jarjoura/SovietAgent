@@ -6,16 +6,16 @@
 #include <ctime>
 
 // === ANSI Color Codes ===
-const std::string RESET  = "\033[0m";
-const std::string RED    = "\033[31m";
-const std::string GREEN  = "\033[32m";
+const std::string RESET = "\033[0m";
+const std::string RED = "\033[31m";
+const std::string GREEN = "\033[32m";
 const std::string YELLOW = "\033[33m";
-const std::string CYAN   = "\033[36m";
+const std::string CYAN = "\033[36m";
 
 using namespace std;
 
 Interface::Interface(Jeu& j)
-    : jeu(j), choix(-1), jour(1), actions(0), score(0) {
+    : jeu(j), choice(-1), day(1), actions(0), score(0) {
     srand(static_cast<unsigned>(time(0)));
 }
 
@@ -33,14 +33,13 @@ void Interface::showMenu() const {
 
 // === Display the policy of the day ===
 void Interface::showPolicy() const {
-    cout << CYAN << "Today's policy:" << RESET << endl;
-    jeu.getPolitique().afficherDebug();
+    cout << CYAN << "Today's official policy:" << RESET << endl;
+    jeu.getPolicy().showDebug();  // ✅ fixed: no afficherDebug
     cout << endl;
 
-    if (!jeu.getMessage().getMessageMorse().empty()) {
-        cout << YELLOW << "Morse message detected: "
-             << jeu.getMessage().getMessageMorse() << RESET << endl;
-        cout << "→ " << jeu.getMessage().getInstructions() << endl;
+    if (jeu.getMessage().isActive()) {
+        cout << YELLOW << "Morse message received!" << RESET << endl;
+        jeu.getMessage().showDebug();  // ✅ fixed: no getMorse/getInstructions
     }
     cout << endl;
 }
@@ -48,10 +47,10 @@ void Interface::showPolicy() const {
 // === Display a permit ===
 void Interface::showPermit(const Permis& p) const {
     cout << "Permit under review: "
-         << CYAN << p.getNom() << RESET
-         << " (" << p.getMotif() << ")";
-    if (!p.getMessageMorse().empty())
-        cout << " - " << YELLOW << "Morse message received" << RESET;
+        << CYAN << p.getName() << RESET
+        << " (" << motiveToString(p.getMotive()) << ")";
+    if (p.hasWestOverride())
+        cout << " - " << YELLOW << "Morse order applies" << RESET;
     cout << endl << endl;
 }
 
@@ -67,24 +66,24 @@ bool Interface::validInput(const string& input) const {
 // === Display day summary ===
 void Interface::showDaySummary() {
     cout << "\n============================" << endl;
-    cout << YELLOW << "Summary of Day " << jour << RESET << endl;
+    cout << YELLOW << "Summary of Day " << day << RESET << endl;
     cout << CYAN << "Current total score: " << score << RESET << endl;
     cout << "============================" << endl << endl;
 }
 
 // === Main game loop ===
 void Interface::run() {
-    while (choix != 0) {
-        cout << YELLOW << "=== DAY " << jour << " ===" << RESET << endl;
+    while (choice != 0) {
+        cout << YELLOW << "=== DAY " << day << " ===" << RESET << endl;
 
         // Generate daily policy and permits
-        jeu.genererJournee();
+        jeu.generateDay();
         showPolicy();
 
-        const auto& permisDuJour = jeu.getPermisDuJour();
+        const auto& dailyPermits = jeu.getPermits();
 
-        for (size_t i = 0; i < permisDuJour.size(); ++i) {
-            const Permis& p = permisDuJour[i];
+        for (size_t i = 0; i < dailyPermits.size(); ++i) {
+            const Permis& p = dailyPermits[i];
             showPermit(p);
 
             string input;
@@ -97,29 +96,29 @@ void Interface::run() {
                 continue;
             }
 
-            choix = stoi(input);
-            if (choix == 0) break;
+            choice = stoi(input);
+            if (choice == 0) break;
 
-            bool decision = (choix == 1);
-            jeu.appliquerDecision(static_cast<int>(i), decision);
+            bool decision = (choice == 1);
+            jeu.applyDecision(static_cast<int>(i), decision);
             actions++;
 
             cout << (decision ? GREEN + string("Permit approved.") : RED + string("Permit denied.")) << RESET << endl;
-            cout << CYAN << "Current score: " << jeu.getScoreTotal() << RESET << endl << endl;
+            cout << CYAN << "Current score: " << jeu.getTotalScore() << RESET << endl << endl;
         }
 
-        if (choix == 0) break;
+        if (choice == 0) break;
 
         // Calculate daily points
-        int pointsDay = jeu.calculerScoreJournee();
-        score = jeu.getScoreTotal();
+        int pointsDay = jeu.calculateDayScore();
+        score = jeu.getTotalScore();
 
         cout << GREEN << "Points earned today: " << pointsDay << RESET << endl;
         showDaySummary();
 
         // Move to next day
-        jour++;
-        jeu.jourSuivant();
+        day++;
+        jeu.nextDay();
 
         cout << "Press Enter to continue...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');

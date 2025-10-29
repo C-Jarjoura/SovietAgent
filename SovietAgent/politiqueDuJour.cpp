@@ -4,21 +4,32 @@
 
 PolitiqueDuJour::PolitiqueDuJour() {}
 
-void PolitiqueDuJour::genererPolitiqueAleatoire() {
-    motifsAutorises = { "travail", "santé" };
-    motifsInterdits = { "tourisme" };
+void PolitiqueDuJour::generateRandomPolicy() {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::bernoulli_distribution coin(0.5);
+
+    allowed[MotiveType::Tourism] = coin(gen);
+    allowed[MotiveType::Family] = coin(gen);
+    allowed[MotiveType::Business] = coin(gen);
+    allowed[MotiveType::Diplomat] = coin(gen);
 }
 
-bool PolitiqueDuJour::estAutorise(const std::string& motif) const {
-    for (const auto& interdit : motifsInterdits)
-        if (motif == interdit) return false;
-    return true;
+bool PolitiqueDuJour::isAllowed(MotiveType m) const {
+    std::map<MotiveType, bool>::const_iterator it = allowed.find(m);
+    if (it == allowed.end()) return false;
+    return it->second;
 }
 
-void PolitiqueDuJour::afficherDebug() const {
-    std::cout << "Motifs autorisés : ";
-    for (auto& m : motifsAutorises) std::cout << m << " ";
-    std::cout << "\nMotifs interdits : ";
-    for (auto& m : motifsInterdits) std::cout << m << " ";
-    std::cout << "\n";
+// --- FIXED: no structured bindings, no 'afficherDebug' ---
+void PolitiqueDuJour::showDebug() const {
+    std::cout << "OFFICIAL POLICY TODAY\n";
+    std::cout << "----------------------\n";
+
+    for (std::map<MotiveType, bool>::const_iterator it = allowed.begin(); it != allowed.end(); ++it) {
+        MotiveType motive = it->first;
+        bool val = it->second;
+        std::cout << motiveToString(motive)
+            << ": " << (val ? "ALLOW" : "DENY") << "\n";
+    }
 }
