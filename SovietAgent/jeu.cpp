@@ -1,4 +1,4 @@
-#include "Jeu.h"
+﻿#include "Jeu.h"
 #include <iostream>
 #include <random>
 #include <ctime>
@@ -89,13 +89,34 @@ void Jeu::nextDay() {
 
 void Jeu::showState() const {
     std::cout << "\n=== DAY " << currentDay << " ===\n";
+
+    // 1. USSR official policy
+    std::cout << "\nOFFICIAL POLICY TODAY\n";
+    std::cout << "----------------------\n";
     policy.showDebug();
-    message.showDebug();
 
+    // 2. WEST secret message (only if active)
+    std::cout << "\n--- WEST MESSAGE ---\n";
+    if (message.isActive()) {
+        std::cout << "(Incoming secret transmission...)\n";
+        message.playMorse(); // 🎧 play the Morse sound + show the morse code
+
+        // After the Morse sound, show the decoded message
+        std::cout << "\n[Decoded message from the West]\n";
+        message.showDebug(); // show the textual decoded order
+    }
+    else {
+        std::cout << "No Morse transmission today.\n";
+    }
+
+    // 3. Display today's permits
     std::cout << "\n--- PERMITS ---\n";
-    for (const auto& p : permitsToday)
+    for (size_t i = 0; i < permitsToday.size(); ++i) {
+        const Permis& p = permitsToday[i];
         p.showDebug();
+    }
 
+    // 4. Display daily results
     std::cout << "\nCurrent day score: " << dayScore
         << " | Total score: " << totalScore
         << " | Resistance: " << resistance << "\n";
