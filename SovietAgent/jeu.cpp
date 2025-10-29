@@ -3,6 +3,12 @@
 #include <random>
 #include <ctime>
 
+// === ANSI Color Codes ===
+const std::string RESET = "\033[0m";
+const std::string RED = "\033[31m";
+const std::string GREEN = "\033[32m";
+const std::string YELLOW = "\033[33m";
+const std::string CYAN = "\033[36m";
 Jeu::Jeu() : currentDay(1), totalScore(0), resistance(0), dayScore(0), dayThreshold(6) {}
 
 void Jeu::generateDay() {
@@ -68,16 +74,16 @@ bool Jeu::runInvestigation() {
     int mod = resistance / 3;
     int total = roll + mod;
 
-    std::cout << "\n!!! INVESTIGATION ALERT !!!\n";
-    std::cout << "Your day score (" << dayScore << ") is below the threshold (" << dayThreshold << ").\n";
+    std::cout <<RED<< "\n!!! INVESTIGATION ALERT !!!\n"<<RESET;
+    std::cout <<YELLOW<< "Your day score (" << dayScore << ") is below the threshold (" << dayThreshold << ").\n"<<RESET;
     std::cout << "Rolling d20 (" << roll << ") + bonus (" << mod << ") = " << total << "\n";
 
     if (total >= 14) {
-        std::cout << "You escaped suspicion for now.\n";
+        std::cout <<GREEN<< "You escaped suspicion for now.\n"<<RESET;
         return true;
     }
     else {
-        std::cout << "You have been captured!\n";
+        std::cout <<RED<<"You have been captured!\n"<<RESET;
         return false;
     }
 }
@@ -88,7 +94,7 @@ void Jeu::nextDay() {
 }
 
 void Jeu::showState() const {
-    std::cout << "\n=== DAY " << currentDay << " ===\n";
+    std::cout <<YELLOW <<"\n=== DAY " << currentDay << " ===\n"<<RESET;
 
     // 1. USSR official policy
     std::cout << "\nOFFICIAL POLICY TODAY\n";
@@ -110,7 +116,7 @@ void Jeu::showState() const {
     }
 
     // 3. Display today's permits
-    std::cout << "\n--- PERMITS ---\n";
+    std::cout <<CYAN<< "\n--- PERMITS ---\n"<<RESET;
     for (size_t i = 0; i < permitsToday.size(); ++i) {
         const Permis& p = permitsToday[i];
         p.showDebug();
