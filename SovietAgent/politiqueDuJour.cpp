@@ -1,3 +1,4 @@
+#include "PolitiqueDuJour.h"
 #include <iostream>
 #include <random>
 
